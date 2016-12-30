@@ -55,9 +55,18 @@ public class TankWars {
 
         //Game loop
         new Thread(() -> {
+            long start = System.currentTimeMillis();
+            int tps = 0;
             while (true) {
+                provider.addGameObject(p);
                 long time = System.currentTimeMillis();
+                tps++;
                 tick++;
+                if (start + 1000 <= time) {
+                    provider.setTPS(tps);
+                    start = time;
+                    tps = 0;
+                }
                 keyListener.tick();
 
                 List<GameObject> toRemove = new ArrayList<>();

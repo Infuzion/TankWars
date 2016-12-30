@@ -3,9 +3,8 @@ package me.infuzion.tank.wars.render.swing;
 import me.infuzion.tank.wars.TankWars;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.Tank;
-import me.infuzion.tank.wars.object.GameObject;
-import me.infuzion.tank.wars.util.Position;
 import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.Position;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +33,7 @@ public class TankWarsCanvas extends JPanel {
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setColor(Color.black);
         graphics2D.drawString("FPS: " + provider.getFPS() + " limited to " + TankWars.frameLimit, 0, 10);
+        graphics2D.drawString("TPS: " + provider.getTPS() + " limited to " + TankWars.tickLimit, 0, 20);
 
         for (Tank tank : tanks) {
             drawTank(tank, graphics2D);

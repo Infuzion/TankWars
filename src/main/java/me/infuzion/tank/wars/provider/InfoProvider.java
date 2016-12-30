@@ -1,8 +1,8 @@
 package me.infuzion.tank.wars.provider;
 
 import me.infuzion.tank.wars.object.Drawable;
-import me.infuzion.tank.wars.object.Tank;
 import me.infuzion.tank.wars.object.GameObject;
+import me.infuzion.tank.wars.object.Tank;
 import me.infuzion.tank.wars.object.Tickable;
 
 import java.util.List;
@@ -20,9 +20,15 @@ public interface InfoProvider {
 
     void updateTanks(List<Tank> tanks);
 
+    int getFPS();
+
     void setFPS(int fps);
 
-    int getFPS();
+    int getTPS();
+
+    void setTPS(int tps);
+
+    boolean isRemote();
 
     void removeGameObject(GameObject object);
 }

@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.UUID;
 
 public class Tank implements Drawable, Tickable {
-    private static final int shotResetTime = 30;
+    private static final int shotResetTime = 0;
     public static final int turnRate = 5;
     private final String name;
     private final int speed = 25;

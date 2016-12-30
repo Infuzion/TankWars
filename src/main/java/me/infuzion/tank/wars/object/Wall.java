@@ -7,12 +7,16 @@ import java.awt.*;
 import java.util.UUID;
 
 public class Wall implements Drawable {
+    private final double width;
+    private final double height;
+    private final InfoProvider provider;
     private UUID uuid = UUID.randomUUID();
     private Position position;
-    private final InfoProvider provider;
     private Shape bounds;
 
-    public Wall(double x, double y, InfoProvider provider) {
+    public Wall(double x, double y, double width, double height, InfoProvider provider) {
+        this.width = width;
+        this.height = height;
         this.position = new Position(x, y);
         this.provider = provider;
         provider.addGameObject(this);
@@ -48,7 +52,7 @@ public class Wall implements Drawable {
 
     @Override
     public void draw(Graphics2D g) {
-        Rectangle rectangle = new Rectangle((int) position.getX(), (int) position.getY(), 50, 50);
+        Rectangle rectangle = new Rectangle((int) position.getX(), (int) position.getY(), (int) width, (int) height);
         g.draw(rectangle);
         setBounds(rectangle);
     }

@@ -1,9 +1,7 @@
 package me.infuzion.tank.wars.provider;
 
 import me.infuzion.tank.wars.object.*;
-import me.infuzion.tank.wars.util.Position;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -13,12 +11,15 @@ public class LocalInfoProvider implements InfoProvider {
     private List<Drawable> drawables = new CopyOnWriteArrayList<>();
     private List<Tickable> tickables = new CopyOnWriteArrayList<>();
     private int fps;
+    private int tps;
 
     public LocalInfoProvider() {
         new Tank("Player 1", 640, 0, 0, this);
         new Tank("Player 2", 0, 240, 18, this);
-        new Wall(50, 50, this);
-        new Wall(150, 50, this);
+        new Wall(0, 0, 1280, 25, this);
+        new Wall(0, 680, 1280, 25, this);
+        new Wall(0, 0, 25, 720, this);
+        new Wall(1260, 0, 25, 720, this);
     }
 
     @Override
@@ -61,13 +62,28 @@ public class LocalInfoProvider implements InfoProvider {
     }
 
     @Override
+    public int getFPS() {
+        return fps;
+    }
+
+    @Override
     public void setFPS(int fps) {
         this.fps = fps;
     }
 
     @Override
-    public int getFPS() {
-        return fps;
+    public int getTPS() {
+        return tps;
+    }
+
+    @Override
+    public void setTPS(int tps) {
+        this.tps = tps;
+    }
+
+    @Override
+    public boolean isRemote() {
+        return false;
     }
 
     @Override
