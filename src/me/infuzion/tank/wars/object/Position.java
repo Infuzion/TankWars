@@ -9,6 +9,10 @@ public class Position {
         this.y = y;
     }
 
+    public Position copy() {
+        return new Position(x, y);
+    }
+
 
     public double getX() {
         return x;

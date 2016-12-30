@@ -21,10 +21,15 @@ public class SwingRenderer implements me.infuzion.tank.wars.render.Renderer {
         frame.setTitle("TankWars");
 
         canvas = new TankWarsCanvas();
-        canvas.updateTanks(provider.getTanks());
+        canvas.updateTanks(provider);
         canvas.setSize(640, 480);
-        canvas.set
+        canvas.setDoubleBuffered(true);
+
         frame.add(canvas);
+        frame.addKeyListener(new SwingKeyListener(provider));
+        frame.setResizable(false);
+
+        canvas.setVisible(true);
         frame.setVisible(true);
 
     }
