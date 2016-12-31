@@ -1,6 +1,9 @@
 package me.infuzion.tank.wars.util;
 
-public class Velocity {
+import java.io.Serializable;
+
+public class Velocity implements Serializable {
+    private static final long serialVersionUID = 1L;
     private double xVelocity;
     private double yVelocity;
 

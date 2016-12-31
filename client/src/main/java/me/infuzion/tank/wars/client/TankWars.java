@@ -1,29 +1,25 @@
 package me.infuzion.tank.wars.client;
 
-import me.infuzion.tank.wars.client.provider.LocalInfoProvider;
 import me.infuzion.tank.wars.client.render.Renderer;
 import me.infuzion.tank.wars.client.render.swing.SwingKeyListener;
 import me.infuzion.tank.wars.client.render.swing.SwingRenderer;
-import me.infuzion.tank.wars.client.util.Settings;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.object.TankProjectile;
 import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.provider.RemoteInfoProvider;
 import me.infuzion.tank.wars.util.Position;
+import me.infuzion.tank.wars.util.Settings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TankWars {
     public static long tick = 0;
-    public static final long frameLimit = 60;
-    public static final double frameTime = 1000 / frameLimit;
 
-    public static final long tickLimit = 20;
-    public static final double tickTime = 1000 / tickLimit;
-
-    public void start() {
-        InfoProvider provider = new LocalInfoProvider();
+    public void start() throws IOException {
+        InfoProvider provider = new RemoteInfoProvider();
         SwingKeyListener keyListener = new SwingKeyListener(provider);
         Renderer renderer = new SwingRenderer(provider, keyListener);
 
@@ -43,7 +39,7 @@ public class TankWars {
                     fps = 0;
                 }
                 renderer.draw();
-                while (System.currentTimeMillis() < time + frameTime) {
+                while (System.currentTimeMillis() < time + Settings.frameTime) {
                     try {
                         Thread.sleep(3);
                     } catch (InterruptedException e) {
@@ -57,7 +53,7 @@ public class TankWars {
         new Thread(() -> {
             long start = System.currentTimeMillis();
             int tps = 0;
-            while (true) {
+            while (!provider.isRemote()) {
                 provider.addGameObject(p);
                 long time = System.currentTimeMillis();
                 tps++;
@@ -83,7 +79,7 @@ public class TankWars {
                 for (GameObject o : toRemove) {
                     provider.removeGameObject(o);
                 }
-                while (System.currentTimeMillis() < time + tickTime) {
+                while (System.currentTimeMillis() < time + Settings.tickTime) {
                     try {
                         Thread.sleep(3);
                     } catch (InterruptedException e) {

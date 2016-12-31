@@ -1,7 +1,6 @@
-package me.infuzion.tank.wars.client.provider;
+package me.infuzion.tank.wars.provider;
 
 import me.infuzion.tank.wars.object.*;
-import me.infuzion.tank.wars.provider.InfoProvider;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -13,7 +13,7 @@ public class Tank implements Drawable, Tickable {
     private final String name;
     private final int speed = 25;
     private final UUID uuid;
-    private final InfoProvider provider;
+    private transient final InfoProvider provider;
     private Position position;
     private int rot;
     private double rotRadians;
@@ -22,6 +22,7 @@ public class Tank implements Drawable, Tickable {
     private Position center;
     private Shape bounds = new Rectangle();
     private long lastShot = -1;
+    private UUID owner;
 
     public Tank(String name, int x, int y, int rot, InfoProvider provider) {
         this.provider = provider;
@@ -122,5 +123,13 @@ public class Tank implements Drawable, Tickable {
     @Override
     public void tick(InfoProvider provider) {
 
+    }
+
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
     }
 }

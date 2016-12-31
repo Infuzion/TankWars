@@ -10,7 +10,6 @@ import java.util.UUID;
 public class Wall implements Drawable {
     private final double width;
     private final double height;
-    private final InfoProvider provider;
     private UUID uuid = UUID.randomUUID();
     private Position position;
     private Shape bounds;
@@ -19,7 +18,6 @@ public class Wall implements Drawable {
         this.width = width;
         this.height = height;
         this.position = new Position(x, y);
-        this.provider = provider;
         provider.addGameObject(this);
     }
 

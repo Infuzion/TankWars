@@ -1,9 +1,10 @@
-package me.infuzion.tank.wars.client.action;
+package me.infuzion.tank.wars.provider.remote;
 
 public enum ActionType {
     LEFT,
     RIGHT,
     FORWARD,
     BACKWARD,
-    FIRE
+    FIRE,
+    IDENTIFY
 }

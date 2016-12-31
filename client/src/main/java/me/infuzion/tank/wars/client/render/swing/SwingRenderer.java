@@ -1,7 +1,7 @@
 package me.infuzion.tank.wars.client.render.swing;
 
-import me.infuzion.tank.wars.client.util.Settings;
 import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.Settings;
 
 import javax.swing.*;
 

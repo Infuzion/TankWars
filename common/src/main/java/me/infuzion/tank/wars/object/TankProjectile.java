@@ -84,13 +84,11 @@ public class TankProjectile implements Projectile {
                 continue;
             }
 
-            System.out.println("Testing for intersection with " + o.getClass().getSimpleName());
             Area collision2 = new Area(o.getBounds());
             collision2.intersect(collision);
             if (!collision2.isEmpty()) {
                 position.setX(position.getX() - velocity.getxVelocity());
                 position.setY(position.getY() - velocity.getyVelocity());
-                System.out.println("Found intersection with " + o.getClass().getCanonicalName());
                 toDestroy = o;
                 break;
             }
