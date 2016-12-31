@@ -1,7 +1,7 @@
 package me.infuzion.tank.wars.client.action;
 
-import me.infuzion.tank.wars.client.object.Tank;
-import me.infuzion.tank.wars.client.provider.InfoProvider;
+import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.provider.InfoProvider;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

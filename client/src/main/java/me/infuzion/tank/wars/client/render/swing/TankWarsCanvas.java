@@ -1,10 +1,10 @@
 package me.infuzion.tank.wars.client.render.swing;
 
 import me.infuzion.tank.wars.client.TankWars;
-import me.infuzion.tank.wars.client.object.Drawable;
-import me.infuzion.tank.wars.client.object.Tank;
-import me.infuzion.tank.wars.client.provider.InfoProvider;
-import me.infuzion.tank.wars.client.util.Position;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.Position;
 
 import javax.swing.*;
 import java.awt.*;

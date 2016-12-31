@@ -1,9 +1,9 @@
-package me.infuzion.tank.wars.client.provider;
+package me.infuzion.tank.wars.provider;
 
-import me.infuzion.tank.wars.client.object.Drawable;
-import me.infuzion.tank.wars.client.object.GameObject;
-import me.infuzion.tank.wars.client.object.Tank;
-import me.infuzion.tank.wars.client.object.Tickable;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.GameObject;
+import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.object.Tickable;
 
 import java.util.List;
 
@@ -27,6 +27,10 @@ public interface InfoProvider {
     int getTPS();
 
     void setTPS(int tps);
+
+    long getTick();
+
+    void setTick(long tick);
 
     boolean isRemote();
 

@@ -1,7 +1,7 @@
 package me.infuzion.tank.wars.client.render.swing;
 
-import me.infuzion.tank.wars.client.object.Tank;
-import me.infuzion.tank.wars.client.provider.InfoProvider;
+import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.provider.InfoProvider;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

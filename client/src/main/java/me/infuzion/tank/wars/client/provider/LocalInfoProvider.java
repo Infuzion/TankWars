@@ -1,6 +1,7 @@
 package me.infuzion.tank.wars.client.provider;
 
-import me.infuzion.tank.wars.client.object.*;
+import me.infuzion.tank.wars.object.*;
+import me.infuzion.tank.wars.provider.InfoProvider;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,6 +13,7 @@ public class LocalInfoProvider implements InfoProvider {
     private List<Tickable> tickables = new CopyOnWriteArrayList<>();
     private int fps;
     private int tps;
+    private long tick;
 
     public LocalInfoProvider() {
         new Tank("Player 1", 640, 0, 0, this);
@@ -79,6 +81,16 @@ public class LocalInfoProvider implements InfoProvider {
     @Override
     public void setTPS(int tps) {
         this.tps = tps;
+    }
+
+    @Override
+    public long getTick() {
+        return tick;
+    }
+
+    @Override
+    public void setTick(long tick) {
+        this.tick = tick;
     }
 
     @Override

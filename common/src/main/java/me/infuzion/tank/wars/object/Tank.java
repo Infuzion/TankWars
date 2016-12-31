@@ -1,14 +1,14 @@
-package me.infuzion.tank.wars.client.object;
+package me.infuzion.tank.wars.object;
 
-import me.infuzion.tank.wars.client.TankWars;
-import me.infuzion.tank.wars.client.provider.InfoProvider;
-import me.infuzion.tank.wars.client.util.Position;
+
+import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.Position;
 
 import java.awt.*;
 import java.util.UUID;
 
 public class Tank implements Drawable, Tickable {
-    private static final int shotResetTime = 0;
+    private static final int shotResetTime = 30;
     public static final int turnRate = 5;
     private final String name;
     private final int speed = 25;
@@ -47,10 +47,10 @@ public class Tank implements Drawable, Tickable {
     }
 
     public void shoot() {
-        if (lastShot + shotResetTime >= TankWars.tick) {
+        if (lastShot + shotResetTime >= provider.getTick()) {
             return;
         }
-        lastShot = TankWars.tick;
+        lastShot = provider.getTick();
         TankProjectile projectile = new TankProjectile(center, rot - 180);
         provider.addGameObject(projectile);
     }
@@ -115,11 +115,12 @@ public class Tank implements Drawable, Tickable {
     public void draw(Graphics2D g) {
     }
 
-    @Override
-    public void tick(InfoProvider provider) {
-    }
-
     public void setBarrelPosition(Position center) {
         this.center = center;
+    }
+
+    @Override
+    public void tick(InfoProvider provider) {
+
     }
 }

@@ -1,4 +1,4 @@
-package me.infuzion.tank.wars.client.util;
+package me.infuzion.tank.wars.util;
 
 public class Velocity {
     private double xVelocity;

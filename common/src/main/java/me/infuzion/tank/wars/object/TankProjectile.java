@@ -1,8 +1,8 @@
-package me.infuzion.tank.wars.client.object;
+package me.infuzion.tank.wars.object;
 
-import me.infuzion.tank.wars.client.provider.InfoProvider;
-import me.infuzion.tank.wars.client.util.Position;
-import me.infuzion.tank.wars.client.util.Velocity;
+import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.Position;
+import me.infuzion.tank.wars.util.Velocity;
 
 import java.awt.*;
 import java.awt.geom.Area;

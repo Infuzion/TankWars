@@ -1,15 +1,15 @@
 package me.infuzion.tank.wars.client;
 
-import me.infuzion.tank.wars.client.object.GameObject;
-import me.infuzion.tank.wars.client.object.TankProjectile;
-import me.infuzion.tank.wars.client.object.Tickable;
-import me.infuzion.tank.wars.client.provider.InfoProvider;
 import me.infuzion.tank.wars.client.provider.LocalInfoProvider;
 import me.infuzion.tank.wars.client.render.Renderer;
 import me.infuzion.tank.wars.client.render.swing.SwingKeyListener;
 import me.infuzion.tank.wars.client.render.swing.SwingRenderer;
-import me.infuzion.tank.wars.client.util.Position;
 import me.infuzion.tank.wars.client.util.Settings;
+import me.infuzion.tank.wars.object.GameObject;
+import me.infuzion.tank.wars.object.TankProjectile;
+import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.Position;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +62,7 @@ public class TankWars {
                 long time = System.currentTimeMillis();
                 tps++;
                 tick++;
+                provider.setTick(tick);
                 if (start + 1000 <= time) {
                     provider.setTPS(tps);
                     start = time;

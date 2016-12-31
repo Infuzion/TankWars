@@ -1,4 +1,4 @@
-package me.infuzion.tank.wars.client.object;
+package me.infuzion.tank.wars.object;
 
 import java.awt.*;
 
