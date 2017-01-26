@@ -1,11 +1,11 @@
 package me.infuzion.tank.wars.provider;
 
+import java.util.List;
+import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.object.Tank;
 import me.infuzion.tank.wars.object.Tickable;
-
-import java.util.List;
 
 public interface InfoProvider {
     List<GameObject> getGameObjects();
@@ -15,6 +15,10 @@ public interface InfoProvider {
     List<Tickable> getTickableObjects();
 
     void addGameObject(GameObject toAdd);
+
+    void quit();
+
+    boolean getQuit();
 
     List<Tank> getTanks();
 
@@ -35,4 +39,8 @@ public interface InfoProvider {
     boolean isRemote();
 
     void removeGameObject(GameObject object);
+
+    List<Tank> ownedBy(UUID uuid);
+
+    List<Tank> getOwned();
 }

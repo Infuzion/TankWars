@@ -1,0 +1,14 @@
+{
+  "name": "explosion",
+  "file": "image/explosion.png",
+  "sprite": {
+    "amount": 16,
+    "rows": 4,
+    "columns": 5,
+    "speed": 1
+  },
+  "scale": {
+    "scaled": true,
+    "factor": 1
+  }
+}

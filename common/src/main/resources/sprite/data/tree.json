@@ -1,0 +1,10 @@
+{
+  "name": "tree",
+  "file": "image/tree.png",
+  "sprite": {
+    "amount": 60,
+    "rows": 4,
+    "columns": 15,
+    "speed": 5
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "sprites": [
+    "data/explosion.json",
+    "data/tree.json",
+    "data/perk_laser.json"
+  ]
+}

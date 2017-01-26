@@ -1,20 +1,27 @@
 package me.infuzion.tank.wars.object;
 
 
-import me.infuzion.tank.wars.util.Position;
-
-import java.awt.*;
+import java.awt.Shape;
 import java.io.Serializable;
 import java.util.UUID;
+import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.Position;
 
 public interface GameObject extends Serializable {
+
     Position getPosition();
 
     boolean isDestroyable();
 
-    Shape getBounds();
+    default boolean hasCollision() {
+        return true;
+    }
 
-    void setBounds(Shape bounds);
+    default void destroy(InfoProvider provider) {
+        provider.removeGameObject(this);
+    }
+
+    Shape getBounds();
 
     UUID getUuid();
 }

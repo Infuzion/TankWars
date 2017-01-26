@@ -1,0 +1,14 @@
+{
+  "name": "perk_laser",
+  "file": "image/perk_laser.png",
+  "sprite": {
+    "amount": 19,
+    "rows": 1,
+    "columns": 19,
+    "speed": 5
+  },
+  "scale": {
+    "scaled": true,
+    "factor": 1
+  }
+}

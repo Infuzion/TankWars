@@ -1,22 +1,20 @@
 package me.infuzion.tank.wars.server;
 
-import me.infuzion.tank.wars.object.Drawable;
-import me.infuzion.tank.wars.object.Tank;
-import me.infuzion.tank.wars.object.TankProjectile;
-import me.infuzion.tank.wars.object.Tickable;
-import me.infuzion.tank.wars.provider.InfoProvider;
-import me.infuzion.tank.wars.provider.LocalInfoProvider;
-import me.infuzion.tank.wars.provider.remote.GameState;
-import me.infuzion.tank.wars.util.Position;
-import me.infuzion.tank.wars.util.Settings;
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.provider.LocalInfoProvider;
+import me.infuzion.tank.wars.provider.remote.GameState;
+import me.infuzion.tank.wars.util.Settings;
 
 public class Server implements Runnable {
     private List<Player> players = new CopyOnWriteArrayList<>();
@@ -44,8 +42,6 @@ public class Server implements Runnable {
                     provider.setTPS(tps);
                     start = time;
                     tps = 0;
-                    TankProjectile projectile = new TankProjectile(new Position(25, 500), 57);
-                    provider.addGameObject(projectile);
                 }
 
                 for (Drawable obj : provider.getDrawableObjects()) {
@@ -66,17 +62,23 @@ public class Server implements Runnable {
         }).start();
 
         while (true) {
-            try {
-                for (Player e : players) {
+            List<Player> toRemove = new ArrayList<>();
+            for (Player e : players) {
+                try {
+
                     GameState toSend = new GameState(provider.getTanks(), provider.getGameObjects(),
                             provider.getDrawableObjects(), provider.getTickableObjects(),
                             provider.getTPS(), provider.getTick());
                     ObjectOutputStream objOut = new ObjectOutputStream(e.socket.getOutputStream());
                     objOut.writeObject(toSend);
                     objOut.flush();
+                } catch (IOException a) {
+                    a.printStackTrace();
+                    toRemove.add(e);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            }
+            for (Player e : toRemove) {
+                players.remove(e);
             }
             try {
                 Thread.sleep(20);

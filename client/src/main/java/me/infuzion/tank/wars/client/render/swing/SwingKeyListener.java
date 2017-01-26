@@ -1,12 +1,11 @@
 package me.infuzion.tank.wars.client.render.swing;
 
-import me.infuzion.tank.wars.object.Tank;
-import me.infuzion.tank.wars.provider.InfoProvider;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
+import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.provider.InfoProvider;
 
 public class SwingKeyListener implements KeyListener {
 
@@ -18,10 +17,15 @@ public class SwingKeyListener implements KeyListener {
         this.infoProvider = infoProvider;
     }
 
-    public void tick(){
-        if(!(infoProvider.getTanks().size() > 0)){
+    public void tick() {
+        if (pressed.contains(KeyEvent.VK_ESCAPE)) {
+            infoProvider.quit();
+        }
+
+        if (!(infoProvider.getTanks().size() > 0)) {
             return;
         }
+
         Tank tank = infoProvider.getTanks().get(0);
         if (pressed.contains(KeyEvent.VK_UP)) {
             tank.moveForward();
@@ -30,30 +34,30 @@ public class SwingKeyListener implements KeyListener {
             tank.moveBackward();
         }
         if (pressed.contains(KeyEvent.VK_LEFT)) {
-            tank.setRot(tank.getRot() - Tank.turnRate);
+            tank.turnLeft();
         }
         if (pressed.contains(KeyEvent.VK_RIGHT)) {
-            tank.setRot(tank.getRot() + Tank.turnRate);
+            tank.turnRight();
         }
         if (pressed.contains(KeyEvent.VK_SPACE)) {
             tank.shoot();
         }
 
-        if(!(infoProvider.getTanks().size() > 1)){
+        if (!(infoProvider.getTanks().size() > 1)) {
             return;
         }
         tank = infoProvider.getTanks().get(1);
         if (pressed.contains(KeyEvent.VK_W)) {
             tank.moveForward();
         }
-        if (pressed.contains(KeyEvent.VK_A)) {
+        if (pressed.contains(KeyEvent.VK_S)) {
             tank.moveBackward();
         }
-        if (pressed.contains(KeyEvent.VK_S)) {
-            tank.setRot(tank.getRot() - Tank.turnRate);
+        if (pressed.contains(KeyEvent.VK_A)) {
+            tank.turnLeft();
         }
         if (pressed.contains(KeyEvent.VK_D)) {
-            tank.setRot(tank.getRot() + Tank.turnRate);
+            tank.turnRight();
         }
         if (pressed.contains(KeyEvent.VK_Q)) {
             tank.shoot();

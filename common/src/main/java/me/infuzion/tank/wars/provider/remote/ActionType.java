@@ -1,6 +1,8 @@
 package me.infuzion.tank.wars.provider.remote;
 
-public enum ActionType {
+import java.io.Serializable;
+
+public enum ActionType implements Serializable {
     LEFT,
     RIGHT,
     FORWARD,

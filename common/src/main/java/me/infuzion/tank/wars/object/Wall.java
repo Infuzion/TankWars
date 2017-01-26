@@ -1,18 +1,26 @@
 package me.infuzion.tank.wars.object;
 
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.util.Random;
+import java.util.UUID;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.Position;
 
-import java.awt.*;
-import java.util.UUID;
-
 public class Wall implements Drawable {
+
+    private static final Random random = new Random();
+    private static final Color color = Color.DARK_GRAY;
     private final double width;
     private final double height;
     private UUID uuid = UUID.randomUUID();
     private Position position;
     private Shape bounds;
+    private int rotation = 0;
 
     public Wall(double x, double y, double width, double height, InfoProvider provider) {
         this.width = width;
@@ -35,8 +43,7 @@ public class Wall implements Drawable {
         return bounds;
     }
 
-    @Override
-    public void setBounds(Shape bounds) {
+    private void setBounds(Shape bounds) {
         this.bounds = bounds;
     }
 
@@ -45,14 +52,15 @@ public class Wall implements Drawable {
         return uuid;
     }
 
-    public void setBounds(Rectangle bounds) {
-        this.bounds = bounds;
-    }
-
     @Override
-    public void draw(Graphics2D g) {
+    public boolean draw(Graphics2D g) {
         Rectangle rectangle = new Rectangle((int) position.getX(), (int) position.getY(), (int) width, (int) height);
-        g.draw(rectangle);
-        setBounds(rectangle);
+        AffineTransform transform = new AffineTransform();
+        g.setColor(color);
+        transform.rotate(Math.toRadians(rotation), rectangle.getCenterX(), rectangle.getCenterY());
+        Shape toDraw = transform.createTransformedShape(rectangle);
+        g.fill(toDraw);
+        setBounds(toDraw);
+        return true;
     }
 }

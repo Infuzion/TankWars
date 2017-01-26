@@ -16,7 +16,7 @@ public class Velocity implements Serializable {
         return xVelocity;
     }
 
-    public void setxVelocity(double xVelocity) {
+    public void setXVelocity(double xVelocity) {
         this.xVelocity = xVelocity;
     }
 
@@ -24,7 +24,7 @@ public class Velocity implements Serializable {
         return yVelocity;
     }
 
-    public void setyVelocity(double yVelocity) {
+    public void setYVelocity(double yVelocity) {
         this.yVelocity = yVelocity;
     }
 }

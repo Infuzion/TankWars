@@ -16,6 +16,21 @@ public class Position implements Serializable {
         return new Position(x, y);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Position)) {
+            return false;
+        }
+        if (((Position) obj).getX() == this.x) {
+            if (((Position) obj).getY() == this.y) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public double getX() {
         return x;
