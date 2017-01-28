@@ -12,9 +12,9 @@ public class SwingRenderer implements me.infuzion.tank.wars.client.render.Render
     private TankWarsCanvas canvas;
 
 
-    public SwingRenderer(InfoProvider provider, SwingKeyListener keyListener) {
+    public SwingRenderer(InfoProvider provider) {
         this.provider = provider;
-        this.keyListener = keyListener;
+        this.keyListener = new SwingKeyListener(provider);
         init();
     }
 
@@ -45,7 +45,7 @@ public class SwingRenderer implements me.infuzion.tank.wars.client.render.Render
     }
 
     @Override
-    public void stop() {
+    public void stopRenderer() {
         frame.setVisible(false);
         frame.dispose();
     }

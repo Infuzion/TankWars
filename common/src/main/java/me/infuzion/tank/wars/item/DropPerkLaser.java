@@ -1,19 +1,20 @@
 package me.infuzion.tank.wars.item;
 
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
-import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.object.perk.Perk;
 import me.infuzion.tank.wars.object.perk.PerkLaser;
+import me.infuzion.tank.wars.object.tank.Tank;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.sprite.SpritePlayer;
 import me.infuzion.tank.wars.sprite.SpriteSheetLoader;
+import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
 
-public class DropPerkLaser implements Drawable, ItemDrop {
+public class DropPerkLaser implements Drawable, ItemDrop, Tickable {
 
     private SpritePlayer player;
     private UUID uuid;
@@ -30,7 +31,7 @@ public class DropPerkLaser implements Drawable, ItemDrop {
     }
 
     @Override
-    public boolean draw(Graphics2D g) {
+    public boolean draw(GraphicsObject g) {
         if (player.isFinished()) {
             player.reset();
         }
@@ -66,5 +67,10 @@ public class DropPerkLaser implements Drawable, ItemDrop {
     @Override
     public void onPickup(Tank tank, InfoProvider provider) {
         provider.removeGameObject(this);
+    }
+
+    @Override
+    public void tick(InfoProvider provider) {
+        player.tick();
     }
 }

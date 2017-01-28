@@ -1,5 +1,6 @@
 package me.infuzion.tank.wars.sound;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -14,7 +15,8 @@ public class SoundLoader {
     public SoundLoader()
         throws IOException, LineUnavailableException, UnsupportedAudioFileException {
         AudioInputStream stream = AudioSystem
-            .getAudioInputStream(getClass().getResourceAsStream("/sound/bg_music.wav"));
+            .getAudioInputStream(
+                new BufferedInputStream(getClass().getResourceAsStream("/sound/bg_music.wav")));
         Clip clip = AudioSystem.getClip();
         clip.open(stream);
         clip.start();

@@ -1,8 +1,8 @@
 package me.infuzion.tank.wars.sprite;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
+import me.infuzion.tank.wars.util.GraphicsObject;
 
 public class SpritePlayer {
 
@@ -20,7 +20,7 @@ public class SpritePlayer {
         this.iterator = sprite.iterator();
     }
 
-    public void draw(Graphics2D graphics2D, double x, double y) {
+    public void tick() {
         if (finished) {
             return;
         }
@@ -28,10 +28,18 @@ public class SpritePlayer {
         if (index % speed == 0) {
             current = iterator.next();
         }
-        graphics2D.drawImage(current, (int) x, (int) y, null);
         if (!iterator.hasNext()) {
             finished = true;
         }
+    }
+
+    public void draw(GraphicsObject graphics, double x, double y) {
+        if (finished) {
+            return;
+        }
+
+        graphics.drawImage(current, (int) x, (int) y);
+
     }
 
     public void reset() {

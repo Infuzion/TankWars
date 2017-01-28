@@ -7,7 +7,7 @@ import java.util.UUID;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.Position;
 
-public interface GameObject extends Serializable {
+public interface GameObject extends Serializable, Identifiable {
 
     Position getPosition();
 

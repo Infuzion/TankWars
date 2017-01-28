@@ -1,13 +1,13 @@
 package me.infuzion.tank.wars.object.projectile;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.util.UUID;
+import javafx.scene.paint.Color;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
 import me.infuzion.tank.wars.util.Velocity;
 
@@ -26,6 +26,8 @@ public class TankProjectile implements Projectile {
             this.position = new Position(0, 0);
         } else {
             this.position = position.copy();
+            position.setX(this.position.getX() + 7.5);
+            position.setY(this.position.getY() + 7.5);
         }
         this.rot = rotation;
         this.uuid = UUID.randomUUID();
@@ -58,12 +60,10 @@ public class TankProjectile implements Projectile {
     }
 
     @Override
-    public boolean draw(Graphics2D g) {
+    public boolean draw(GraphicsObject g) {
         Ellipse2D circle = new Ellipse2D.Double();
         circle.setFrame(position.getX(), position.getY(), 15, 15);
         setBounds(circle);
-        g.setColor(Color.blue);
-        g.draw(circle);
         g.setColor(Color.GREEN);
         g.fill(circle);
         return true;
@@ -86,35 +86,36 @@ public class TankProjectile implements Projectile {
             return;
         }
 
-        GameObject toDestroy = null;
+        GameObject collidedWith = null;
         Area collision = new Area(getBounds());
         for (GameObject o : provider.getGameObjects()) {
             if (!o.hasCollision() || o instanceof Projectile) {
                 continue;
             }
-
             if (o.getBounds() == null) {
-                return;
+                continue;
             }
             Area collision2 = new Area(o.getBounds());
             collision2.intersect(collision);
             if (!collision2.isEmpty()) {
-                position.setX(position.getX() - velocity.getxVelocity());
-                position.setY(position.getY() - velocity.getyVelocity());
-                toDestroy = o;
+                position.setX(position.getX() - Math.signum(velocity.getxVelocity()) * 2);
+                position.setY(position.getY() - Math.signum(velocity.getyVelocity()) * 2);
+                collidedWith = o;
                 break;
             }
         }
-        if (toDestroy != null) {
-            if (toDestroy.isDestroyable()) {
+        if (collidedWith != null) {
+            if (collidedWith.isDestroyable()) {
                 destroy(provider);
-                toDestroy.destroy(provider);
+                collidedWith.destroy(provider);
             } else {
                 double avgX =
-                    toDestroy.getBounds().getBounds().getMaxX() - toDestroy.getBounds().getBounds()
+                    collidedWith.getBounds().getBounds().getMaxX() - collidedWith.getBounds()
+                        .getBounds()
                         .getMinX();
                 double avgY =
-                    toDestroy.getBounds().getBounds().getMaxY() - toDestroy.getBounds().getBounds()
+                    collidedWith.getBounds().getBounds().getMaxY() - collidedWith.getBounds()
+                        .getBounds()
                         .getMinY();
                 if (avgX < avgY) {
                     rot = 360 - rot;

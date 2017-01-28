@@ -4,17 +4,26 @@ import java.util.List;
 import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
-import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.object.Identifiable;
 import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.object.tank.Tank;
 
 public interface InfoProvider {
     List<GameObject> getGameObjects();
+
+    void registerPersistent(Identifiable identifiable);
 
     List<Drawable> getDrawableObjects();
 
     List<Tickable> getTickableObjects();
 
     void addGameObject(GameObject toAdd);
+
+    void registerDrawable(Drawable toAdd);
+
+    void registerTickable(Tickable tickable);
+
+    void registerAll(Identifiable identifiable);
 
     void quit();
 

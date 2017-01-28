@@ -1,8 +1,8 @@
 package me.infuzion.tank.wars.object;
 
-import java.awt.Graphics2D;
+import me.infuzion.tank.wars.util.GraphicsObject;
 
-public interface Drawable extends GameObject {
+public interface Drawable extends Identifiable {
 
-    boolean draw(Graphics2D g);
+    boolean draw(GraphicsObject g);
 }

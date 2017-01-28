@@ -1,8 +1,7 @@
-package me.infuzion.tank.wars.object;
+package me.infuzion.tank.wars.object.tank;
 
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -11,21 +10,27 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Ellipse2D.Double;
 import java.util.Random;
 import java.util.UUID;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.GameObject;
+import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.object.perk.PerkLaser;
 import me.infuzion.tank.wars.object.projectile.TankProjectile;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.sprite.SpritePlayer;
 import me.infuzion.tank.wars.sprite.SpriteSheetLoader;
+import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
 
-public class Tank implements Drawable, Tickable {
+public class Tank implements Drawable, Tickable, GameObject {
 
     private static final int turnRate = 6;
-    //        private static final int shotResetTime = 0;
+    //    private static final int shotResetTime = 0;
     private static final int shotResetTime = 30;
     private static final Random random = new Random();
     private final String name;
     private final UUID uuid;
     private transient final InfoProvider provider;
+    private Position shootLocation;
     private int speed = 25;
     private Position position;
     private int rot;
@@ -51,15 +56,23 @@ public class Tank implements Drawable, Tickable {
         this.rotRadians = Math.toRadians(rot - 90);
         this.alive = true;
         provider.addGameObject(this);
+        provider.registerPersistent(this);
+    }
+
+    public Position getCenter() {
+        return center;
     }
 
     public void moveForward() {
+        if (!alive) {
+            return;
+        }
         position.setX(position.getX() - speed * Math.cos(rotRadians));
         position.setY(position.getY() - speed * Math.sin(rotRadians));
     }
 
     public void shoot() {
-        if (lastShot + shotResetTime >= provider.getTick()) {
+        if (shootLocation == null || !alive || lastShot + shotResetTime >= provider.getTick()) {
             return;
         }
         lastShot = provider.getTick();
@@ -77,10 +90,16 @@ public class Tank implements Drawable, Tickable {
     }
 
     public void turnLeft() {
+        if (!alive) {
+            return;
+        }
         setRot(rot - turnRate);
     }
 
     public void turnRight() {
+        if (!alive) {
+            return;
+        }
         setRot(rot + turnRate);
     }
 
@@ -97,6 +116,9 @@ public class Tank implements Drawable, Tickable {
     }
 
     public void moveBackward() {
+        if (!alive) {
+            return;
+        }
         position.setX(position.getX() + speed * Math.cos(rotRadians));
         position.setY(position.getY() + speed * Math.sin(rotRadians));
     }
@@ -126,9 +148,16 @@ public class Tank implements Drawable, Tickable {
         this.alive = true;
         setPosition(pos);
         setRot(rot);
+        PerkLaser p = new PerkLaser();
+        p.apply(this);
+        provider.registerAll(p);
+
     }
 
     public Shape getBounds() {
+        if (!alive) {
+            return null;
+        }
         return bounds;
     }
 
@@ -140,11 +169,12 @@ public class Tank implements Drawable, Tickable {
         return uuid;
     }
 
-    public void draw(Graphics2D g, int x, int y, int rot, boolean drawName) {
+    public void draw(GraphicsObject g, int x, int y, int rot, boolean drawName) {
         draw(g, x, y, rot, drawName, false);
     }
 
-    private void draw(Graphics2D g, int x, int y, int rot, boolean drawName, boolean updateBounds) {
+    private void draw(GraphicsObject g, int x, int y, int rot, boolean drawName,
+        boolean updateBounds) {
         Rectangle tankBody = new Rectangle(x, y, 50, 100);
 
         double centX = tankBody.getCenterX();
@@ -181,6 +211,13 @@ public class Tank implements Drawable, Tickable {
         g.draw(circleToDraw);
         g.fill(circleToDraw);
         transform.transform(p, p);
+        g.drawOval((int) p.getX(), (int) p.getY(), 5, 5);
+        if (shootLocation == null) {
+            shootLocation = new Position(p.getX(), p.getY());
+        } else {
+            shootLocation.setX(p.getX());
+            shootLocation.setY(p.getY());
+        }
         if (updateBounds) {
             this.setBarrelPosition(new Position(p.getX(), p.getY()));
             this.setBounds(transform.createTransformedShape(tankBody.getBounds()));
@@ -191,7 +228,7 @@ public class Tank implements Drawable, Tickable {
     }
 
     @Override
-    public boolean draw(Graphics2D g) {
+    public boolean draw(GraphicsObject g) {
         if (rot_last == rot) {
             if (pos_last.equals(position)) {
                 return false;
@@ -217,7 +254,9 @@ public class Tank implements Drawable, Tickable {
 
     @Override
     public void tick(InfoProvider provider) {
-
+        if (explosionPlayer != null) {
+            explosionPlayer.tick();
+        }
     }
 
     public UUID getOwner() {

@@ -1,12 +1,11 @@
 package me.infuzion.tank.wars.provider.remote;
 
-import me.infuzion.tank.wars.object.Drawable;
-import me.infuzion.tank.wars.object.GameObject;
-import me.infuzion.tank.wars.object.Tank;
-import me.infuzion.tank.wars.object.Tickable;
-
 import java.io.Serializable;
 import java.util.List;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.GameObject;
+import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.object.tank.Tank;
 
 public class GameState implements Serializable {
     private static final long serialVersionUID = 1L;

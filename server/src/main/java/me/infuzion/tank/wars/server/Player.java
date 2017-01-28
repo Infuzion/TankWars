@@ -1,9 +1,8 @@
 package me.infuzion.tank.wars.server;
 
-import me.infuzion.tank.wars.object.Tank;
-
 import java.net.Socket;
 import java.util.UUID;
+import me.infuzion.tank.wars.object.tank.Tank;
 
 public class Player {
     public final String name;

@@ -4,20 +4,23 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
-import me.infuzion.tank.wars.object.Tank;
+import java.util.UUID;
+import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.object.tank.Tank;
 import me.infuzion.tank.wars.provider.InfoProvider;
 
-public class SwingKeyListener implements KeyListener {
-
+public class SwingKeyListener implements KeyListener, Tickable {
     private final InfoProvider infoProvider;
 
     private Set<Integer> pressed = new HashSet<>(); // stores currently pressed keycodes
 
     public SwingKeyListener(InfoProvider infoProvider) {
         this.infoProvider = infoProvider;
+        infoProvider.registerTickable(this);
+        infoProvider.registerPersistent(this);
     }
 
-    public void tick() {
+    public void tick(InfoProvider provider) {
         if (pressed.contains(KeyEvent.VK_ESCAPE)) {
             infoProvider.quit();
         }
@@ -77,5 +80,10 @@ public class SwingKeyListener implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         pressed.remove(e.getKeyCode());
+    }
+
+    @Override
+    public UUID getUuid() {
+        return null;
     }
 }

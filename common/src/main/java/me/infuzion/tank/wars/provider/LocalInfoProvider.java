@@ -8,10 +8,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import me.infuzion.tank.wars.item.DropPerkLaser;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
-import me.infuzion.tank.wars.object.Scoreboard;
-import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.object.Identifiable;
 import me.infuzion.tank.wars.object.Tickable;
-import me.infuzion.tank.wars.object.Wall;
+import me.infuzion.tank.wars.object.misc.Scoreboard;
+import me.infuzion.tank.wars.object.misc.Wall;
+import me.infuzion.tank.wars.object.tank.Tank;
 import me.infuzion.tank.wars.util.Position;
 import me.infuzion.tank.wars.util.Settings;
 
@@ -21,6 +22,7 @@ public class LocalInfoProvider implements InfoProvider {
     private List<GameObject> objects = new CopyOnWriteArrayList<>();
     private List<Drawable> drawables = new CopyOnWriteArrayList<>();
     private List<Tickable> tickables = new CopyOnWriteArrayList<>();
+    private List<Identifiable> persistentObjects = new CopyOnWriteArrayList<>();
     private Scoreboard scoreboard;
     private int fps;
     private int tps;
@@ -68,16 +70,16 @@ public class LocalInfoProvider implements InfoProvider {
     }
 
     private void nextLevel() {
-        clearNonEssential(objects);
-        clearNonEssential(drawables);
-        clearNonEssential(tickables);
+        clearNonPersistent(objects);
+        clearNonPersistent(drawables);
+        clearNonPersistent(tickables);
         randomizeLevel();
     }
 
-    private void clearNonEssential(List list) {
+    private void clearNonPersistent(List list) {
         List<Object> toRet = null;
         for (Object e : list) {
-            if (e instanceof Tank || e instanceof Scoreboard) {
+            if (persistentObjects.contains(e)) {
                 continue;
             }
             if (toRet == null) {
@@ -139,6 +141,11 @@ public class LocalInfoProvider implements InfoProvider {
     }
 
     @Override
+    public void registerPersistent(Identifiable identifiable) {
+        persistentObjects.add(identifiable);
+    }
+
+    @Override
     public List<Drawable> getDrawableObjects() {
         return drawables;
     }
@@ -149,8 +156,17 @@ public class LocalInfoProvider implements InfoProvider {
     }
 
     @Override
-    public void addGameObject(GameObject toAdd) {
-        objects.add(toAdd);
+    public void registerDrawable(Drawable toAdd) {
+        drawables.add(toAdd);
+    }
+
+    @Override
+    public void registerTickable(Tickable tickable) {
+        tickables.add(tickable);
+    }
+
+    @Override
+    public void registerAll(Identifiable toAdd) {
         if (toAdd instanceof Drawable) {
             drawables.add((Drawable) toAdd);
         }
@@ -160,6 +176,12 @@ public class LocalInfoProvider implements InfoProvider {
         if (toAdd instanceof Tank) {
             tanks.add((Tank) toAdd);
         }
+    }
+
+    @Override
+    public void addGameObject(GameObject toAdd) {
+        objects.add(toAdd);
+        registerAll(toAdd);
     }
 
     @Override

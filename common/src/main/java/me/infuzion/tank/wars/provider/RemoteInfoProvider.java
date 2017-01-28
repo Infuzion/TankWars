@@ -11,8 +11,9 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
-import me.infuzion.tank.wars.object.Tank;
+import me.infuzion.tank.wars.object.Identifiable;
 import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.object.tank.Tank;
 import me.infuzion.tank.wars.provider.remote.GameState;
 
 public class RemoteInfoProvider implements InfoProvider {
@@ -61,6 +62,11 @@ public class RemoteInfoProvider implements InfoProvider {
     }
 
     @Override
+    public void registerPersistent(Identifiable identifiable) {
+
+    }
+
+    @Override
     public List<Drawable> getDrawableObjects() {
         return getResponse().drawables;
     }
@@ -72,6 +78,21 @@ public class RemoteInfoProvider implements InfoProvider {
 
     @Override
     public void addGameObject(GameObject toAdd) {
+
+    }
+
+    @Override
+    public void registerDrawable(Drawable toAdd) {
+
+    }
+
+    @Override
+    public void registerTickable(Tickable tickable) {
+
+    }
+
+    @Override
+    public void registerAll(Identifiable identifiable) {
 
     }
 

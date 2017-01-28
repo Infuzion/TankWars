@@ -4,5 +4,5 @@ public interface Renderer {
 
     void draw();
 
-    void stop();
+    void stopRenderer();
 }

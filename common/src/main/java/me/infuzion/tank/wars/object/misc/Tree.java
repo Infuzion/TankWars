@@ -1,15 +1,18 @@
-package me.infuzion.tank.wars.object;
+package me.infuzion.tank.wars.object.misc;
 
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.UUID;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.GameObject;
+import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.sprite.SpritePlayer;
 import me.infuzion.tank.wars.sprite.SpriteSheetLoader;
+import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
 
-public class Tree implements Drawable {
+public class Tree implements Drawable, GameObject, Tickable {
 
     private final UUID uuid;
     private SpritePlayer animation;
@@ -28,7 +31,7 @@ public class Tree implements Drawable {
     }
 
     @Override
-    public boolean draw(Graphics2D g) {
+    public boolean draw(GraphicsObject g) {
         if (animation.isFinished()) {
             animation.reset();
         }
@@ -54,5 +57,10 @@ public class Tree implements Drawable {
     @Override
     public UUID getUuid() {
         return uuid;
+    }
+
+    @Override
+    public void tick(InfoProvider provider) {
+        animation.tick();
     }
 }

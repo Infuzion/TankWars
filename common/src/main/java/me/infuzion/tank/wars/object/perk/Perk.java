@@ -1,14 +1,9 @@
 package me.infuzion.tank.wars.object.perk;
 
-import java.awt.Graphics2D;
-import me.infuzion.tank.wars.object.Tank;
-import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.Tickable;
+import me.infuzion.tank.wars.object.tank.Tank;
 
-public interface Perk {
-
+public interface Perk extends Tickable, Drawable {
     void apply(Tank tank);
-
-    void draw(Graphics2D graphics);
-
-    void tick(InfoProvider provider);
 }

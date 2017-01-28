@@ -1,17 +1,19 @@
-package me.infuzion.tank.wars.object;
+package me.infuzion.tank.wars.object.misc;
 
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.Random;
 import java.util.UUID;
+import me.infuzion.tank.wars.object.Drawable;
+import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
 
-public class Wall implements Drawable {
+public class Wall implements Drawable, GameObject {
 
     private static final Random random = new Random();
     private static final Color color = Color.DARK_GRAY;
@@ -53,8 +55,9 @@ public class Wall implements Drawable {
     }
 
     @Override
-    public boolean draw(Graphics2D g) {
-        Rectangle rectangle = new Rectangle((int) position.getX(), (int) position.getY(), (int) width, (int) height);
+    public boolean draw(GraphicsObject g) {
+        Rectangle rectangle = new Rectangle((int) position.getX(), (int) position.getY(),
+            (int) width, (int) height);
         AffineTransform transform = new AffineTransform();
         g.setColor(color);
         transform.rotate(Math.toRadians(rotation), rectangle.getCenterX(), rectangle.getCenterY());
