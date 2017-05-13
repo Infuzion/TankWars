@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+package me.infuzion.tank.wars.protobuf;
+
+message GameData {
+
+    enum DataType {
+        UPDATE = 1;
+        UPDATE_ALL = 2;
+    }
+
+    optional int32 tps = 3;
+    optional DataType type = 4;
+    optional int32 toUpdate = 5;
+    repeated GameObject gameObject = 6;
+}
+
+message Position {
+    optional double x_pos = 1;
+    optional double y_pos = 2;
+}
+
+message GameObject {
+    required string uuid = 1;
+    required string class = 2;
+    optional Position pos = 3;
+    repeated bytes data = 5;
+}
+
+message Action {
+    enum Type {
+        SHOOT = 1;
+        TURN_LEFT = 2;
+        TURN_RIGHT = 3;
+        MOVE_FORWARDS = 4;
+        MOVE_BACKWARDS = 5;
+    }
+
+    enum ActionType {
+        RELEASE = 1;
+        PRESS = 2;
+    }
+
+    required ActionType action = 1;
+    required Type type = 2;
+    required string uuid = 3;
+}

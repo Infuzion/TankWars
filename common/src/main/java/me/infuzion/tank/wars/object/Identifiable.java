@@ -9,4 +9,5 @@ public interface Identifiable {
     default UUID getUuid() {
         return uuid;
     }
+
 }

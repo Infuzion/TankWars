@@ -2,8 +2,7 @@
 
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0"
-  xmlns="http://javafx.com/javafx/8.0.111"
-  fx:controller="me.infuzion.tank.wars.client.render.fx.GameAreaController">
-  <Canvas height="500.0" layoutX="25.0" layoutY="7.0" width="500.0" fx:id="canvas"/>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.111"
+            fx:controller="me.infuzion.tank.wars.client.render.fx.GameAreaController">
+    <Canvas fx:id="canvas" height="507.0" width="525.0"/>
 </AnchorPane>

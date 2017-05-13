@@ -1,8 +1,5 @@
 package me.infuzion.tank.wars.item;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.object.perk.Perk;
@@ -13,6 +10,9 @@ import me.infuzion.tank.wars.sprite.SpritePlayer;
 import me.infuzion.tank.wars.sprite.SpriteSheetLoader;
 import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
+
+import java.awt.*;
+import java.util.UUID;
 
 public class DropPerkLaser implements Drawable, ItemDrop, Tickable {
 
@@ -27,7 +27,7 @@ public class DropPerkLaser implements Drawable, ItemDrop, Tickable {
         position = new Position(x, y);
         SpriteSheetLoader loader = SpriteSheetLoader.getInstance();
         player = new SpritePlayer(loader.getSprite("perk_laser"));
-        provider.addGameObject(this);
+        provider.register(this);
     }
 
     @Override

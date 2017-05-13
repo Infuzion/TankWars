@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import me.infuzion.tank.wars.client.render.Renderer;
+import me.infuzion.tank.wars.input.executor.InputExecutor;
 import me.infuzion.tank.wars.provider.InfoProvider;
 
 public class FxRenderer extends Application implements Renderer {
@@ -14,16 +15,18 @@ public class FxRenderer extends Application implements Renderer {
     private static boolean init;
     private static InfoProvider provider;
     private static GameAreaController controller;
+    private static InputExecutor executor;
 
-    public FxRenderer(InfoProvider provider) {
+    public FxRenderer(InfoProvider provider, InputExecutor executor) {
         FxRenderer.provider = provider;
+        FxRenderer.executor = executor;
         new Thread(Application::launch).start();
-
     }
 
     /**
      * Should never be called by anything other than JavaFX
      */
+    @SuppressWarnings("unused")
     public FxRenderer() {
         if (!Platform.isFxApplicationThread()) {
             throw new RuntimeException("Should not be called!");
@@ -44,8 +47,10 @@ public class FxRenderer extends Application implements Renderer {
         primaryStage.setScene(scene);
         init = true;
         primaryStage.setTitle("Rendering using JavaFX!");
-        primaryStage.setAlwaysOnTop(true);
+        primaryStage.setResizable(false);
         primaryStage.show();
+        controller.registerKeyListener(executor);
+        System.out.println("start");
     }
 
 
@@ -59,6 +64,7 @@ public class FxRenderer extends Application implements Renderer {
 
     @Override
     public void stopRenderer() {
+        Platform.exit();
     }
 
 }

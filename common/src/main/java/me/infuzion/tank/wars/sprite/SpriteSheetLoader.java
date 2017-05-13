@@ -1,13 +1,14 @@
 package me.infuzion.tank.wars.sprite;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SpriteSheetLoader {
 
@@ -24,7 +25,7 @@ public class SpriteSheetLoader {
 
         sprites.forEach((Object e) -> {
             try {
-                SoundDescriptor descriptor = new SoundDescriptor((JSONObject) parser
+                SpriteDescriptor descriptor = new SpriteDescriptor((JSONObject) parser
                     .parse(new InputStreamReader(getClass().getResourceAsStream(SPRITE_PATH + e))));
                 spriteMap.put(descriptor.getName(), new Sprite(descriptor,
                     getClass().getResourceAsStream(SPRITE_PATH + descriptor.getFileName())));

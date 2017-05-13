@@ -1,14 +1,12 @@
 package me.infuzion.tank.wars.client.render.swing;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import javax.swing.JPanel;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Settings;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class TankWarsCanvas extends JPanel {
 
@@ -16,7 +14,7 @@ public class TankWarsCanvas extends JPanel {
         RenderingHints.VALUE_ANTIALIAS_ON);
     private InfoProvider provider;
 
-    public void updateTanks(InfoProvider provider) {
+    public TankWarsCanvas(InfoProvider provider) {
         this.provider = provider;
     }
 

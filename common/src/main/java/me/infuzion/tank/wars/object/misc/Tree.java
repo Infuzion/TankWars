@@ -1,8 +1,5 @@
 package me.infuzion.tank.wars.object.misc;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.object.Tickable;
@@ -11,6 +8,9 @@ import me.infuzion.tank.wars.sprite.SpritePlayer;
 import me.infuzion.tank.wars.sprite.SpriteSheetLoader;
 import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
+
+import java.awt.*;
+import java.util.UUID;
 
 public class Tree implements Drawable, GameObject, Tickable {
 
@@ -23,7 +23,7 @@ public class Tree implements Drawable, GameObject, Tickable {
     }
 
     public Tree(InfoProvider provider, Position position) {
-        provider.addGameObject(this);
+        provider.register(this);
         uuid = UUID.randomUUID();
         this.position = position;
         SpriteSheetLoader loader = SpriteSheetLoader.getInstance();

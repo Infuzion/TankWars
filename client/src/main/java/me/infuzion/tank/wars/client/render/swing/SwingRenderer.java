@@ -1,9 +1,11 @@
 package me.infuzion.tank.wars.client.render.swing;
 
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import me.infuzion.tank.wars.client.key.swing.SwingKeyListener;
+import me.infuzion.tank.wars.input.executor.LocalInputExecutor;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.Settings;
+
+import javax.swing.*;
 
 public class SwingRenderer implements me.infuzion.tank.wars.client.render.Renderer {
     private final InfoProvider provider;
@@ -12,9 +14,9 @@ public class SwingRenderer implements me.infuzion.tank.wars.client.render.Render
     private TankWarsCanvas canvas;
 
 
-    public SwingRenderer(InfoProvider provider) {
+    public SwingRenderer(InfoProvider provider, LocalInputExecutor inputExecutor) {
         this.provider = provider;
-        this.keyListener = new SwingKeyListener(provider);
+        this.keyListener = new SwingKeyListener(inputExecutor);
         init();
     }
 
@@ -25,8 +27,7 @@ public class SwingRenderer implements me.infuzion.tank.wars.client.render.Render
         frame.setSize(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT);
         frame.setTitle("Tank Wars");
 
-        canvas = new TankWarsCanvas();
-        canvas.updateTanks(provider);
+        canvas = new TankWarsCanvas(provider);
         canvas.addKeyListener(keyListener);
         canvas.setFocusable(true);
         canvas.setSize(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT);

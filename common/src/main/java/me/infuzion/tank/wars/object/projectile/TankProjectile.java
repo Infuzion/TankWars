@@ -1,15 +1,16 @@
 package me.infuzion.tank.wars.object.projectile;
 
-import java.awt.Shape;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.util.UUID;
 import javafx.scene.paint.Color;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
 import me.infuzion.tank.wars.util.Velocity;
+
+import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.util.UUID;
 
 public class TankProjectile implements Projectile {
 
@@ -76,11 +77,10 @@ public class TankProjectile implements Projectile {
 
     @Override
     public void tick(InfoProvider provider) {
-        lifetime++;
-        if (lifetime < 3) {
-            move();
+        if (provider.isRemote()) {
             return;
         }
+        lifetime++;
         if (lifetime > 750) {
             destroy(provider);
             return;
@@ -98,16 +98,15 @@ public class TankProjectile implements Projectile {
             Area collision2 = new Area(o.getBounds());
             collision2.intersect(collision);
             if (!collision2.isEmpty()) {
-                position.setX(position.getX() - Math.signum(velocity.getxVelocity()) * 2);
-                position.setY(position.getY() - Math.signum(velocity.getyVelocity()) * 2);
+                position.setX(position.getX() - velocity.getxVelocity());
+                position.setY(position.getY() - velocity.getyVelocity());
                 collidedWith = o;
                 break;
             }
         }
         if (collidedWith != null) {
             if (collidedWith.isDestroyable()) {
-                destroy(provider);
-                collidedWith.destroy(provider);
+                onCollision(collidedWith, provider);
             } else {
                 double avgX =
                     collidedWith.getBounds().getBounds().getMaxX() - collidedWith.getBounds()
@@ -128,6 +127,11 @@ public class TankProjectile implements Projectile {
         move();
     }
 
+    protected void onCollision(GameObject collidedWith, InfoProvider provider) {
+        destroy(provider);
+        collidedWith.destroy(provider);
+    }
+
     private void calculateVelocity() {
         double rotRadians = Math.toRadians(rot - 90);
         double velX = speed * Math.cos(rotRadians);
@@ -138,5 +142,10 @@ public class TankProjectile implements Projectile {
     @Override
     public Velocity getVelocity() {
         return velocity;
+    }
+
+    @Override
+    public void fire(Position position, int rotation) {
+
     }
 }

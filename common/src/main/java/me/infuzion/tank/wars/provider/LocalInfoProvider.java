@@ -1,10 +1,5 @@
 package me.infuzion.tank.wars.provider;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import me.infuzion.tank.wars.item.DropPerkLaser;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
@@ -13,24 +8,35 @@ import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.object.misc.Scoreboard;
 import me.infuzion.tank.wars.object.misc.Wall;
 import me.infuzion.tank.wars.object.tank.Tank;
+import me.infuzion.tank.wars.provider.network.LocalNetworkManager;
+import me.infuzion.tank.wars.provider.network.NetworkManager;
 import me.infuzion.tank.wars.util.Position;
 import me.infuzion.tank.wars.util.Settings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class LocalInfoProvider implements InfoProvider {
 
-    private static List<Tank> tanks = new CopyOnWriteArrayList<>();
-    private List<GameObject> objects = new CopyOnWriteArrayList<>();
-    private List<Drawable> drawables = new CopyOnWriteArrayList<>();
-    private List<Tickable> tickables = new CopyOnWriteArrayList<>();
-    private List<Identifiable> persistentObjects = new CopyOnWriteArrayList<>();
-    private Scoreboard scoreboard;
+    protected long tick;
     private int fps;
     private int tps;
     private boolean toQuit = false;
-    private long tick;
+    protected GameObjectHolder gameObjectHolder = new GameObjectHolder();
+    private NetworkManager networkManager;
 
     public LocalInfoProvider() {
-        scoreboard = new Scoreboard(this);
+        networkManager = new LocalNetworkManager(this);
+    }
+
+    public void run() {
+        Scoreboard scoreboard = new Scoreboard(this);
+        new Tank("1", 20, 300, 23, this);
+        new Tank("11", 20, 300, 23, this);
+        randomizeLevel();
         Thread t = new Thread(() -> {
             int i = 0;
             List<Tank> aliveTanks = new ArrayList<>();
@@ -38,7 +44,7 @@ public class LocalInfoProvider implements InfoProvider {
             while (true) {
                 aliveTanks.clear();
                 int amountAlive = 0;
-                for (Tank e : tanks) {
+                for (Tank e : gameObjectHolder.getTanks()) {
                     if (e.isAlive()) {
                         aliveTanks.add(e);
                         amountAlive++;
@@ -70,26 +76,8 @@ public class LocalInfoProvider implements InfoProvider {
     }
 
     private void nextLevel() {
-        clearNonPersistent(objects);
-        clearNonPersistent(drawables);
-        clearNonPersistent(tickables);
+        gameObjectHolder.clearNonPersistent();
         randomizeLevel();
-    }
-
-    private void clearNonPersistent(List list) {
-        List<Object> toRet = null;
-        for (Object e : list) {
-            if (persistentObjects.contains(e)) {
-                continue;
-            }
-            if (toRet == null) {
-                toRet = new ArrayList<>();
-            }
-            toRet.add(e);
-        }
-        if (toRet != null) {
-            list.removeAll(toRet);
-        }
     }
 
     private void randomizeLevel() {
@@ -101,13 +89,17 @@ public class LocalInfoProvider implements InfoProvider {
         int p2Y = r.nextInt(Settings.SCREEN_HEIGHT);
         int p2X = r.nextInt(Settings.SCREEN_WIDTH);
 
+
+        System.out.println("generated tank at " + p1X + ":" + p1Y);
+        System.out.println("test");
+        List<Tank> tanks = gameObjectHolder.getTanks();
         if (tanks.size() == 0) {
             new Tank("Player 1", p1X, p1Y, rot, this);
             new Tank("Player 2", p2X, p2Y, 360 - rot, this);
         } else {
             for (Tank e : tanks) {
                 e.respawn(new Position(r.nextInt(Settings.SCREEN_WIDTH),
-                    r.nextInt(Settings.SCREEN_HEIGHT)), rot);
+                        r.nextInt(Settings.SCREEN_HEIGHT)), rot);
                 rot = 360 - rot;
             }
         }
@@ -127,7 +119,7 @@ public class LocalInfoProvider implements InfoProvider {
                 new Wall(wallX, wallY, 25, r.nextInt(Settings.SCREEN_HEIGHT), this);
             }
         }
-
+//
         new Wall(-25, -25, Settings.SCREEN_WIDTH, 25, this);
         new Wall(-25, Settings.SCREEN_HEIGHT, Settings.SCREEN_WIDTH, 25, this);
         new Wall(-25, 0, 25, Settings.SCREEN_HEIGHT, this);
@@ -137,51 +129,27 @@ public class LocalInfoProvider implements InfoProvider {
 
     @Override
     public List<GameObject> getGameObjects() {
-        return objects;
+        return gameObjectHolder.getGameObjects();
     }
 
     @Override
     public void registerPersistent(Identifiable identifiable) {
-        persistentObjects.add(identifiable);
+        gameObjectHolder.addPersistent(identifiable);
     }
 
     @Override
     public List<Drawable> getDrawableObjects() {
-        return drawables;
+        return gameObjectHolder.getDrawables();
     }
 
     @Override
     public List<Tickable> getTickableObjects() {
-        return tickables;
+        return gameObjectHolder.getTickables();
     }
 
     @Override
-    public void registerDrawable(Drawable toAdd) {
-        drawables.add(toAdd);
-    }
-
-    @Override
-    public void registerTickable(Tickable tickable) {
-        tickables.add(tickable);
-    }
-
-    @Override
-    public void registerAll(Identifiable toAdd) {
-        if (toAdd instanceof Drawable) {
-            drawables.add((Drawable) toAdd);
-        }
-        if (toAdd instanceof Tickable) {
-            tickables.add((Tickable) toAdd);
-        }
-        if (toAdd instanceof Tank) {
-            tanks.add((Tank) toAdd);
-        }
-    }
-
-    @Override
-    public void addGameObject(GameObject toAdd) {
-        objects.add(toAdd);
-        registerAll(toAdd);
+    public void register(Identifiable toAdd) {
+        gameObjectHolder.addObject(toAdd);
     }
 
     @Override
@@ -196,12 +164,12 @@ public class LocalInfoProvider implements InfoProvider {
 
     @Override
     public List<Tank> getTanks() {
-        return LocalInfoProvider.tanks;
+        return gameObjectHolder.getTanks();
     }
 
     @Override
-    public void updateTanks(List<Tank> tanks) {
-        LocalInfoProvider.tanks = tanks;
+    public List<Tank> getControllableTanks() {
+        return gameObjectHolder.getTanks();
     }
 
     @Override
@@ -241,10 +209,12 @@ public class LocalInfoProvider implements InfoProvider {
 
     @Override
     public synchronized void removeGameObject(GameObject object) {
-        objects.removeIf(e -> e.getUuid() == object.getUuid());
-        tickables.removeIf(e -> e.getUuid() == object.getUuid());
-        drawables.removeIf(e -> e.getUuid() == object.getUuid());
-        tanks.removeIf(e -> e.getUuid() == object.getUuid());
+        gameObjectHolder.removeObject(object);
+    }
+
+    @Override
+    public NetworkManager getNetworkManager() {
+        return networkManager;
     }
 
     @Override
@@ -260,7 +230,7 @@ public class LocalInfoProvider implements InfoProvider {
 
     @Override
     public List<Tank> getOwned() {
-        return tanks;
+        return gameObjectHolder.getTanks();
     }
 
 

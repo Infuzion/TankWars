@@ -1,23 +1,29 @@
 package me.infuzion.tank.wars.client;
 
-import java.io.IOException;
 import me.infuzion.tank.wars.client.render.Renderer;
 import me.infuzion.tank.wars.client.render.fx.FxRenderer;
-import me.infuzion.tank.wars.client.render.swing.SwingRenderer;
+import me.infuzion.tank.wars.input.executor.InputExecutor;
+import me.infuzion.tank.wars.input.executor.RemoteInputExecutor;
 import me.infuzion.tank.wars.object.Tickable;
-import me.infuzion.tank.wars.provider.InfoProvider;
-import me.infuzion.tank.wars.provider.LocalInfoProvider;
+import me.infuzion.tank.wars.provider.RemoteInfoProvider;
 import me.infuzion.tank.wars.util.Settings;
+
+import java.io.IOException;
 
 public class TankWars {
 
     private static long tick = 0;
 
     public void start() throws IOException {
-        InfoProvider provider = new LocalInfoProvider();
-        Renderer renderer = new SwingRenderer(provider);
-        Renderer renderer1 = new FxRenderer(provider);
 
+//        InfoProvider provider = new LocalInfoProvider();
+//        InputExecutor executor = new LocalInputExecutor(provider);
+        RemoteInfoProvider provider = new RemoteInfoProvider();
+        provider.run();
+        InputExecutor executor = new RemoteInputExecutor(provider);
+
+        Renderer renderer = new FxRenderer(provider, executor);
+//        Renderer renderer = new SwingRenderer(provider, (LocalInputExecutor) executor);
         long startTime = System.currentTimeMillis();
         //Render loop
         Thread renderLoop = new Thread(() -> {
@@ -36,7 +42,11 @@ public class TankWars {
                     fps = 0;
                 }
                 renderer.draw();
-                renderer1.draw();
+//                if (fps % 2 == 0) {
+//                    for (Tickable object : provider.getTickableObjects()) {
+//                        object.tick(provider);
+//                    }
+//                }
                 while (System.currentTimeMillis() < time + Settings.frameTime) {
                     try {
                         Thread.sleep(3);
@@ -51,7 +61,7 @@ public class TankWars {
         Thread gameLoop = new Thread(() -> {
             long start = System.currentTimeMillis();
             int tps = 0;
-            while (!provider.isRemote()) {
+            while (true) {
                 if (provider.getQuit()) {
                     return;
                 }

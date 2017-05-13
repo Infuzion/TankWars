@@ -1,18 +1,19 @@
 package me.infuzion.tank.wars.sound;
 
-import java.io.IOException;
+import me.infuzion.tank.wars.sprite.SpriteDescriptor;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.FloatControl.Type;
 import javax.sound.sampled.LineUnavailableException;
-import me.infuzion.tank.wars.sprite.SoundDescriptor;
+import java.io.IOException;
 
 public class Sound {
 
-    private final SoundDescriptor descriptor;
+    private final SpriteDescriptor descriptor;
 
-    public Sound(SoundDescriptor descriptor, AudioInputStream sound, Clip clip)
+    public Sound(SpriteDescriptor descriptor, AudioInputStream sound, Clip clip)
         throws LineUnavailableException, IOException {
         this.descriptor = descriptor;
         clip.open(sound);
@@ -22,7 +23,7 @@ public class Sound {
         clip.loop(Integer.MAX_VALUE);
     }
 
-    public SoundDescriptor getDescriptor() {
+    public SpriteDescriptor getDescriptor() {
         return descriptor;
     }
 }

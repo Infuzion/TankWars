@@ -1,10 +1,9 @@
 package me.infuzion.tank.wars.server;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Shape;
-import java.awt.image.BufferedImage;
 import me.infuzion.tank.wars.util.GraphicsObject;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class EmptyGraphics implements GraphicsObject {
 
@@ -75,7 +74,7 @@ public class EmptyGraphics implements GraphicsObject {
 
     @Override
     public Font getFont() {
-        return null;
+        return new Font("", Font.PLAIN, 16);
     }
 
     @Override

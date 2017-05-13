@@ -1,18 +1,17 @@
 package me.infuzion.tank.wars.client.render.fx;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Shape;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import me.infuzion.tank.wars.util.GraphicsObject;
+
+import java.awt.*;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import me.infuzion.tank.wars.util.GraphicsObject;
 
 public class FxGraphicsObject implements GraphicsObject {
 
@@ -27,10 +26,8 @@ public class FxGraphicsObject implements GraphicsObject {
         List<double[]> pointList = new ArrayList<>();
         double[] coords = new double[6];
         int numSubPaths = 0;
-        for (PathIterator pi = path;
-            !pi.isDone();
-            pi.next()) {
-            switch (pi.currentSegment(coords)) {
+        for (; !path.isDone(); path.next()) {
+            switch (path.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
                     pointList.add(Arrays.copyOf(coords, 2));
                     ++numSubPaths;
@@ -95,7 +92,7 @@ public class FxGraphicsObject implements GraphicsObject {
     public void fill(Shape shape) {
         if (shape instanceof Rectangle2D) {
             context.fillRect(((Rectangle2D) shape).getX(), ((Rectangle2D) shape).getY(),
-                ((Rectangle2D) shape).getWidth(), ((Rectangle2D) shape).getHeight());
+                    ((Rectangle2D) shape).getWidth(), ((Rectangle2D) shape).getHeight());
         } else {
             shapeToPath(shape);
             context.fill();
@@ -118,18 +115,18 @@ public class FxGraphicsObject implements GraphicsObject {
                     break;
                 case PathIterator.SEG_QUADTO:
                     this.context.quadraticCurveTo(coords[0], coords[1], coords[2],
-                        coords[3]);
+                            coords[3]);
                     break;
                 case PathIterator.SEG_CUBICTO:
                     this.context.bezierCurveTo(coords[0], coords[1], coords[2],
-                        coords[3], coords[4], coords[5]);
+                            coords[3], coords[4], coords[5]);
                     break;
                 case PathIterator.SEG_CLOSE:
                     this.context.closePath();
                     break;
                 default:
                     throw new RuntimeException("Unrecognised segment type "
-                        + segType);
+                            + segType);
             }
             iterator.next();
         }
@@ -162,7 +159,7 @@ public class FxGraphicsObject implements GraphicsObject {
 
     private javafx.scene.paint.Color toFXColor(Color c) {
         return javafx.scene.paint.Color
-            .rgb(c.getRed(), c.getGreen(), c.getBlue());
+                .rgb(c.getRed(), c.getGreen(), c.getBlue());
     }
 
     @Override

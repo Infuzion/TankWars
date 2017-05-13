@@ -1,6 +1,7 @@
 package me.infuzion.tank.wars.sprite;
 
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -8,14 +9,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.imageio.ImageIO;
 
 public class Sprite implements Iterable<BufferedImage> {
 
     private final List<BufferedImage> images;
-    private final SoundDescriptor descriptor;
+    private final SpriteDescriptor descriptor;
 
-    public Sprite(SoundDescriptor descriptor, InputStream image) throws IOException {
+    public Sprite(SpriteDescriptor descriptor, InputStream image) throws IOException {
         this.descriptor = descriptor;
         images = new ArrayList<>();
         BufferedImage bufferedImage = ImageIO.read(image);
@@ -52,6 +52,7 @@ public class Sprite implements Iterable<BufferedImage> {
             }
             images.add(img);
         }
+        image.close();
     }
 
     public static BufferedImage scale(BufferedImage sbi, int imageType, int dWidth, int dHeight,
@@ -71,7 +72,7 @@ public class Sprite implements Iterable<BufferedImage> {
         return images.iterator();
     }
 
-    public SoundDescriptor getDescriptor() {
+    public SpriteDescriptor getDescriptor() {
         return descriptor;
     }
 }

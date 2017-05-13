@@ -1,25 +1,26 @@
 package me.infuzion.tank.wars.object.tank;
 
 
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Ellipse2D.Double;
-import java.util.Random;
-import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.object.perk.PerkLaser;
+import me.infuzion.tank.wars.object.projectile.Projectile;
 import me.infuzion.tank.wars.object.projectile.TankProjectile;
 import me.infuzion.tank.wars.provider.InfoProvider;
+import me.infuzion.tank.wars.provider.LocalInfoProvider;
 import me.infuzion.tank.wars.sprite.SpritePlayer;
 import me.infuzion.tank.wars.sprite.SpriteSheetLoader;
 import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Ellipse2D.Double;
+import java.nio.ByteBuffer;
+import java.util.Random;
+import java.util.UUID;
 
 public class Tank implements Drawable, Tickable, GameObject {
 
@@ -29,7 +30,7 @@ public class Tank implements Drawable, Tickable, GameObject {
     private static final Random random = new Random();
     private final String name;
     private final UUID uuid;
-    private transient final InfoProvider provider;
+    private transient InfoProvider provider;
     private Position shootLocation;
     private int speed = 25;
     private Position position;
@@ -37,26 +38,105 @@ public class Tank implements Drawable, Tickable, GameObject {
     private double rotRadians;
     private SpritePlayer explosionPlayer;
     private Color primaryColor = Color
-        .getHSBColor(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+            .getHSBColor(random.nextInt(255), random.nextInt(255), random.nextInt(255));
     private Color secondaryColor = Color.DARK_GRAY;
     private Position center;
     private Shape bounds = new Rectangle();
     private long lastShot = -1;
     private UUID owner;
     private boolean alive;
-    private int rot_last = -1;
     private Position pos_last = new Position(-1, -1);
 
     public Tank(String name, int x, int y, int rot, InfoProvider provider) {
+        this(UUID.randomUUID(), new Position(x, y), rot, getRandomColor(), getRandomColor(), true, name, provider);
         this.provider = provider;
-        this.uuid = UUID.randomUUID();
+    }
+
+    public Tank(ByteBuffer byteBuffer, InfoProvider provider) {
+        //UUID uuid = new UUID(byteBuffer.getLong(), byteBuffer.getLong());
+        //
+        //Position position = new Position(byteBuffer.getDouble(), byteBuffer.getDouble());
+        //int rot = byteBuffer.getInt();
+        //
+        //Color primaryColor = intToColor(byteBuffer.getInt());
+        //
+        //Color secondaryColor = intToColor(byteBuffer.getInt());
+        //
+        //boolean alive = byteBuffer.get() == 1;
+        //
+        //int nameLength = byteBuffer.getInt();
+        //
+        //byte[] nameChars = new byte[nameLength];
+        //byteBuffer.get(nameChars);
+        //String name = new String(nameChars);
+        //noinspection ConstantConditions
+        this(byteBuffer.rewind() != null ?                                             // Hack to keep it in 1 statement
+                        new UUID(byteBuffer.getLong(), byteBuffer.getLong()) : null,   // UUID
+                new Position(byteBuffer.getDouble(), byteBuffer.getDouble()),          // Position
+                byteBuffer.getShort(),                                                 // Rotation
+                intToColor(byteBuffer.getInt()),                                       // Primary Color
+                intToColor(byteBuffer.getInt()),                                       // Secondary Color
+                byteBuffer.get() == 1,                                           // Is Alive?
+                deserializeName(byteBuffer),                                           // Name
+                provider);                                                             // Info Provider
+    }
+
+    public Tank(UUID uuid, Position position, int rot, Color primaryColor, Color secondaryColor, boolean alive, String name, InfoProvider provider) {
+        this.uuid = uuid;
         this.name = name;
+        this.position = position;
         this.rot = rot;
-        this.position = new Position(x, y);
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
+        this.alive = alive;
+
         this.rotRadians = Math.toRadians(rot - 90);
-        this.alive = true;
-        provider.addGameObject(this);
+        provider.register(this);
         provider.registerPersistent(this);
+        provider.getNetworkManager().register(Tank::new, this::serialize, this.getClass().getName().hashCode(), true);
+    }
+
+    public static void main(String[] a) {
+        LocalInfoProvider provider = new LocalInfoProvider();
+        Tank ab = new Tank("123", 0, 1, 123, provider);
+        ByteBuffer byteBuffer = ab.serialize();
+        Tank c = new Tank(byteBuffer, provider);
+        System.out.println(ab.alive);
+        System.out.println(c.alive);
+    }
+
+    private static Color getRandomColor() {
+        return Color.getHSBColor(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+    }
+
+    private static String deserializeName(ByteBuffer byteBuffer) {
+        int nameLength = byteBuffer.getInt();
+
+        byte[] nameChars = new byte[nameLength];
+        byteBuffer.get(nameChars);
+        return new String(nameChars);
+    }
+
+    private static int colorToInt(Color color) {
+        return color.getRGB();
+    }
+
+    private static Color intToColor(int color) {
+        return new Color(color);
+    }
+
+    private ByteBuffer serialize() {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(47 + name.length());
+
+        byteBuffer.putLong(uuid.getMostSignificantBits()).putLong(uuid.getLeastSignificantBits());  // 16
+        byteBuffer.putDouble(this.position.getX()).putDouble(this.position.getY());                 // 16
+        byteBuffer.putShort((short) (rot % 360));                                                   // 2
+        byteBuffer.putInt(colorToInt(primaryColor)).putInt(colorToInt(secondaryColor));             // 8
+        byteBuffer.put((byte) (alive ? 1 : 0));                                                     // 1
+        byteBuffer.putInt(name.length());                                                           // 4
+        byteBuffer.put(name.getBytes());                                                            // name.length
+        // 47 + name.length
+        return byteBuffer;
     }
 
     public Position getCenter() {
@@ -77,7 +157,11 @@ public class Tank implements Drawable, Tickable, GameObject {
         }
         lastShot = provider.getTick();
         TankProjectile projectile = new TankProjectile(center, rot - 180);
-        provider.addGameObject(projectile);
+        provider.register(projectile);
+    }
+
+    public void shoot(Projectile projectile) {
+
     }
 
     public int getRot() {
@@ -85,6 +169,9 @@ public class Tank implements Drawable, Tickable, GameObject {
     }
 
     public void setRot(int rot) {
+        if (rot > 360 || rot < -360) {
+            rot %= 360;
+        }
         this.rotRadians = Math.toRadians(rot - 90);
         this.rot = rot;
     }
@@ -142,16 +229,15 @@ public class Tank implements Drawable, Tickable, GameObject {
         this.alive = false;
         SpriteSheetLoader loader = SpriteSheetLoader.getInstance();
         this.explosionPlayer = new SpritePlayer(loader.getSprite("explosion"));
+        PerkLaser p = new PerkLaser();
+        p.apply(this);
+        provider.register(p);
     }
 
     public void respawn(Position pos, int rot) {
         this.alive = true;
         setPosition(pos);
         setRot(rot);
-        PerkLaser p = new PerkLaser();
-        p.apply(this);
-        provider.registerAll(p);
-
     }
 
     public Shape getBounds() {
@@ -174,7 +260,7 @@ public class Tank implements Drawable, Tickable, GameObject {
     }
 
     private void draw(GraphicsObject g, int x, int y, int rot, boolean drawName,
-        boolean updateBounds) {
+                      boolean updateBounds) {
         Rectangle tankBody = new Rectangle(x, y, 50, 100);
 
         double centX = tankBody.getCenterX();
@@ -187,16 +273,16 @@ public class Tank implements Drawable, Tickable, GameObject {
         Ellipse2D circle = new Double();
         circle.setFrame(tankBody);
         circle.setFrame((centX + ((circle.getX() - circle.getCenterX())) / 2) - 12,
-            (centY + (circle.getY() - circle.getCenterY()) / 2), 50, 50);
+                (centY + (circle.getY() - circle.getCenterY()) / 2), 50, 50);
         Shape circleToDraw = transform.createTransformedShape(circle);
 
         Rectangle barrel = new Rectangle();
         barrel.setFrame(circle.getBounds());
         barrel.setFrame((centX - ((barrel.getX() - barrel.getCenterX())) / 2) - 18,
-            (centY - (barrel.getY() - barrel.getCenterY()) / 2) - 12, 10, 75);
+                (centY - (barrel.getY() - barrel.getCenterY()) / 2) - 12, 10, 75);
 
         Point p = new Point((int) (centX - ((barrel.getX() - barrel.getCenterX())) / 2) - 4,
-            (int) (centY - (barrel.getY() - barrel.getCenterY()) / 2) + 75);
+                (int) (centY - (barrel.getY() - barrel.getCenterY()) / 2) + 75);
         Shape barrelToDraw = transform.createTransformedShape(barrel);
 
         g.setPaint(this.getPrimaryColor());
@@ -229,15 +315,14 @@ public class Tank implements Drawable, Tickable, GameObject {
 
     @Override
     public boolean draw(GraphicsObject g) {
-        if (rot_last == rot) {
-            if (pos_last.equals(position)) {
-                return false;
-            }
+        if (pos_last.equals(position)) {
+            return false;
         }
-        if (!this.isAlive()) {
+        if (!alive) {
             if (explosionPlayer != null) {
                 explosionPlayer.draw(g, position.getX(), position.getY());
             }
+            System.out.println("DEAD");
             return true;
         }
         double x = position.getX();
@@ -254,6 +339,7 @@ public class Tank implements Drawable, Tickable, GameObject {
 
     @Override
     public void tick(InfoProvider provider) {
+        this.provider = provider;
         if (explosionPlayer != null) {
             explosionPlayer.tick();
         }

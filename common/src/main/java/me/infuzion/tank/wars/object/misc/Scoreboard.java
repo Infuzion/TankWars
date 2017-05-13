@@ -1,15 +1,15 @@
 package me.infuzion.tank.wars.object.misc;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.object.tank.Tank;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Settings;
+
+import java.awt.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Scoreboard implements Drawable, Tickable {
 
@@ -18,7 +18,7 @@ public class Scoreboard implements Drawable, Tickable {
 
     public Scoreboard(InfoProvider provider) {
         this.provider = provider;
-        provider.registerAll(this);
+        provider.register(this);
         provider.registerPersistent(this);
     }
 
@@ -48,6 +48,14 @@ public class Scoreboard implements Drawable, Tickable {
 
     @Override
     public void tick(InfoProvider provider) {
+        if (provider.isRemote()) {
+            return;
+        }
+        score.forEach((s, i) -> {
+            if (i == 0) {
+                score.remove(s);
+            }
+        });
         provider.getTanks()
             .forEach((e) -> score.put(e.getName(), score.getOrDefault(e.getName(), 0)));
     }

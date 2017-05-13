@@ -1,0 +1,14 @@
+{
+  "name": "perk_mine",
+  "file": "image/perk_mine.png",
+  "sprite": {
+    "amount": 7,
+    "rows": 1,
+    "columns": 7,
+    "speed": 3
+  },
+  "scale": {
+    "scaled": true,
+    "factor": 1
+  }
+}

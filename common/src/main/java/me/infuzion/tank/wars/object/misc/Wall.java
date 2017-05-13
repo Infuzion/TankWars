@@ -1,17 +1,16 @@
 package me.infuzion.tank.wars.object.misc;
 
 
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.util.Random;
-import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.GraphicsObject;
 import me.infuzion.tank.wars.util.Position;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.util.Random;
+import java.util.UUID;
 
 public class Wall implements Drawable, GameObject {
 
@@ -28,7 +27,7 @@ public class Wall implements Drawable, GameObject {
         this.width = width;
         this.height = height;
         this.position = new Position(x, y);
-        provider.addGameObject(this);
+        provider.register(this);
     }
 
     @Override

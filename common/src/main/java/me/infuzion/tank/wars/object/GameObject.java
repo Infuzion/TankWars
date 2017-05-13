@@ -1,13 +1,13 @@
 package me.infuzion.tank.wars.object;
 
 
-import java.awt.Shape;
-import java.io.Serializable;
-import java.util.UUID;
 import me.infuzion.tank.wars.provider.InfoProvider;
 import me.infuzion.tank.wars.util.Position;
 
-public interface GameObject extends Serializable, Identifiable {
+import java.awt.*;
+import java.util.UUID;
+
+public interface GameObject extends Identifiable {
 
     Position getPosition();
 

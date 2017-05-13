@@ -1,29 +1,27 @@
 package me.infuzion.tank.wars.provider;
 
-import java.util.List;
-import java.util.UUID;
 import me.infuzion.tank.wars.object.Drawable;
 import me.infuzion.tank.wars.object.GameObject;
 import me.infuzion.tank.wars.object.Identifiable;
 import me.infuzion.tank.wars.object.Tickable;
 import me.infuzion.tank.wars.object.tank.Tank;
+import me.infuzion.tank.wars.provider.network.NetworkManager;
+
+import java.util.List;
+import java.util.UUID;
 
 public interface InfoProvider {
     List<GameObject> getGameObjects();
 
     void registerPersistent(Identifiable identifiable);
 
+    void run();
+
     List<Drawable> getDrawableObjects();
 
     List<Tickable> getTickableObjects();
 
-    void addGameObject(GameObject toAdd);
-
-    void registerDrawable(Drawable toAdd);
-
-    void registerTickable(Tickable tickable);
-
-    void registerAll(Identifiable identifiable);
+    void register(Identifiable identifiable);
 
     void quit();
 
@@ -31,7 +29,7 @@ public interface InfoProvider {
 
     List<Tank> getTanks();
 
-    void updateTanks(List<Tank> tanks);
+    List<Tank> getControllableTanks();
 
     int getFPS();
 
@@ -48,6 +46,8 @@ public interface InfoProvider {
     boolean isRemote();
 
     void removeGameObject(GameObject object);
+
+    NetworkManager getNetworkManager();
 
     List<Tank> ownedBy(UUID uuid);
 
